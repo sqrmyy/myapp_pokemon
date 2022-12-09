@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myapp_pokemon/poke_detail.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,53 +15,27 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(),
+      home: TopPage(),
     );
   }
 }
 
-class MyHomePage extends StatelessWidget {
+class TopPage extends StatelessWidget {
+  const TopPage({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Stack(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(32),
-                  child: Image.network(
-                    "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png",
-                    height: 100,
-                    width: 100,
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  child: const Text(
-                    'No.25',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const Text(
-              'pikachu',
-              style: TextStyle(
-                fontSize: 36,
-                fontWeight: FontWeight.bold,
+        child: ElevatedButton(
+          child: const Text('detail'),
+          onPressed: () => {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (BuildContext context) => const PokeDetail(),
               ),
-            ),
-            const Chip(
-              label: Text('electric'),
-              backgroundColor: Colors.yellow,
-            ),
-          ],
+            )
+          },
         ),
       ),
     );
