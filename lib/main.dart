@@ -35,14 +35,7 @@ class _TopPageState extends State<TopPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: ListView.builder(
-          padding: const EdgeInsets.symmetric(
-            vertical: 4,
-            horizontal: 16,
-          ),
-          itemCount: 898,
-          itemBuilder: (context, index) => PokeListItem(index: index),
-        ),
+        child: currentbnb == 0 ? const PokeList() : Settings(),
       ),
       bottomNavigationBar: BottomNavigationBar(
         onTap: (index) => {
@@ -63,6 +56,124 @@ class _TopPageState extends State<TopPage> {
             label: 'settings',
           ),
         ],
+      ),
+    );
+  }
+}
+
+class PokeList extends StatelessWidget {
+  const PokeList({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      padding: const EdgeInsets.symmetric(
+        vertical: 4,
+        horizontal: 16,
+      ),
+      itemCount: 898,
+      itemBuilder: (context, index) => PokeListItem(index: index),
+    );
+  }
+}
+
+class Settings extends StatelessWidget {
+  const Settings({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      children: [
+        ListTile(
+          leading: Icon(Icons.lightbulb),
+          title: Text('Dark/Light Mode'),
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => const ThemeModeSelectionPage(),
+            ),
+          ),
+        ),
+        SwitchListTile(
+          title: const Text('Switch'),
+          value: true,
+          onChanged: (yes) => {},
+        ),
+        CheckboxListTile(
+          title: const Text('Checkbox'),
+          value: true,
+          onChanged: (yes) => {},
+        ),
+        RadioListTile(
+          title: const Text('Radio'),
+          value: true,
+          groupValue: true,
+          onChanged: (yes) => {},
+        ),
+      ],
+    );
+  }
+}
+
+class ThemeModeSelectionPage extends StatefulWidget {
+  const ThemeModeSelectionPage({Key? key}) : super(key: key);
+
+  @override
+  State<ThemeModeSelectionPage> createState() => _ThemeModeSelectionPageState();
+}
+
+class _ThemeModeSelectionPageState extends State<ThemeModeSelectionPage> {
+  ThemeMode _current = ThemeMode.system;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: Column(
+          children: [
+            ListTile(
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () => Navigator.pop(context),
+              ),
+            ),
+            RadioListTile<ThemeMode>(
+              value: ThemeMode.system,
+              groupValue: _current,
+              title: const Text('System'),
+              onChanged: (val) => {
+                setState(
+                  () {
+                    _current = val!;
+                  },
+                ),
+              },
+            ),
+            RadioListTile<ThemeMode>(
+              value: ThemeMode.dark,
+              groupValue: _current,
+              title: const Text('Dark'),
+              onChanged: (val) => {
+                setState(
+                  () {
+                    _current = val!;
+                  },
+                ),
+              },
+            ),
+            RadioListTile<ThemeMode>(
+              value: ThemeMode.light,
+              groupValue: _current,
+              title: const Text('Light'),
+              onChanged: (val) => {
+                setState(
+                  () {
+                    _current = val!;
+                  },
+                ),
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
