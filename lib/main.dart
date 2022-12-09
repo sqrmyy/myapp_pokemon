@@ -35,7 +35,7 @@ class _TopPageState extends State<TopPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: currentbnb == 0 ? const PokeList() : Settings(),
+        child: currentbnb == 0 ? const PokeList() : const Settings(),
       ),
       bottomNavigationBar: BottomNavigationBar(
         onTap: (index) => {
@@ -77,8 +77,15 @@ class PokeList extends StatelessWidget {
   }
 }
 
-class Settings extends StatelessWidget {
+class Settings extends StatefulWidget {
   const Settings({Key? key}) : super(key: key);
+
+  @override
+  State<Settings> createState() => _SettingsState();
+}
+
+class _SettingsState extends State<Settings> {
+  ThemeMode _themeMode = ThemeMode.system;
 
   @override
   Widget build(BuildContext context) {
@@ -87,11 +94,23 @@ class Settings extends StatelessWidget {
         ListTile(
           leading: Icon(Icons.lightbulb),
           title: Text('Dark/Light Mode'),
-          onTap: () => Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => const ThemeModeSelectionPage(),
-            ),
+          trailing: Text(
+            (_themeMode == ThemeMode.system)
+                ? 'System'
+                : (_themeMode == ThemeMode.dark ? 'Dark' : 'Light'),
           ),
+          onTap: () async {
+            var ret = await Navigator.of(context).push<ThemeMode>(
+              MaterialPageRoute(
+                builder: (context) => ThemeModeSelectionPage(mode: _themeMode),
+              ),
+            );
+            setState(
+              () {
+                _themeMode = ret!;
+              },
+            );
+          },
         ),
         SwitchListTile(
           title: const Text('Switch'),
@@ -115,14 +134,24 @@ class Settings extends StatelessWidget {
 }
 
 class ThemeModeSelectionPage extends StatefulWidget {
-  const ThemeModeSelectionPage({Key? key}) : super(key: key);
+  const ThemeModeSelectionPage({
+    Key? key,
+    required this.mode,
+  }) : super(key: key);
+  final ThemeMode mode;
 
   @override
   State<ThemeModeSelectionPage> createState() => _ThemeModeSelectionPageState();
 }
 
 class _ThemeModeSelectionPageState extends State<ThemeModeSelectionPage> {
-  ThemeMode _current = ThemeMode.system;
+  late ThemeMode _current;
+
+  @override
+  void initState() {
+    super.initState();
+    _current = widget.mode;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -133,7 +162,7 @@ class _ThemeModeSelectionPageState extends State<ThemeModeSelectionPage> {
             ListTile(
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back),
-                onPressed: () => Navigator.pop(context),
+                onPressed: () => Navigator.pop<ThemeMode>(context, _current),
               ),
             ),
             RadioListTile<ThemeMode>(
